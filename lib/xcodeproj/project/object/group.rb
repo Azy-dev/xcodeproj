@@ -291,7 +291,11 @@ module Xcodeproj
       # This class is used to gather localized files into one entry.
       #
       class PBXVariantGroup < PBXGroup
-
+        
+        def duplicate
+          self
+        end
+        
         # @!group Attributes
 
         # @return [String] the file type guessed by Xcode.

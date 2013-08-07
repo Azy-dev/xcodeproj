@@ -154,6 +154,10 @@ module Xcodeproj
         def proxy?
           false
         end
+        
+        def duplicate
+          self
+        end
 
         #---------------------------------------------------------------------#
 

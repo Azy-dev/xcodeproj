@@ -43,6 +43,10 @@ module Xcodeproj
       #
       def uuids
         map { |obj| obj.uuid }
+      rescue NoMethodError => error
+        puts "error #{error}"
+        puts "self #{self}"
+        puts "owner #{owner}"
       end
 
       # @return [Array<AbstractObject>]
@@ -78,6 +82,8 @@ module Xcodeproj
       # @return [void]
       #
       def <<(object)
+        puts "self list #{self}"
+        puts "object #{object}"
         super
         perform_additions_operations(object)
       end

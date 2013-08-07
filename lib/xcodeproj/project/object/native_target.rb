@@ -186,6 +186,13 @@ module Xcodeproj
 
         public
 
+        def duplicate
+          duplicate = super
+          duplicate.name = self.name + " duplicate"
+          self.project.targets << duplicate
+          duplicate
+        end
+
         # @!group Helpers
 
         # Adds source files to the target.

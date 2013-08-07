@@ -80,57 +80,102 @@ module Xcodeproj
         end
 
         def test_dup
-          to_one_attributes.each { |attr| 
+          to_one_attributes.each { |attr|
             puts "attr #{attr.name}"
             puts "value #{attr.get_value(self).inspect}"
             puts "duplicate #{attr.get_value(self).dup.inspect}"
           }
         end
-    
-        def dup
-          duplicate = @project.new(self.class)
+
+        def duplicate_simple_attribute duplicate, attr
+          puts "#{attr.name} #{attr.get_value(self)}"
+          attr.set_value(duplicate, attr.get_value(self))
+        end
+
+        def duplicate_simple_attributes duplicate
           puts "simple_attributes"
           simple_attributes.each { |attr|
-            puts "#{attr.name} #{attr.get_value(self)}"
-            attr.set_value(duplicate, attr.get_value(self))
+            duplicate_simple_attribute duplicate, attr
           }
-          
-          puts "duplicate after #{duplicate.inspect}"
-          
+        end
+
+        def duplicate_to_one_attribute duplicate, attr
+          puts "#{attr.name} #{attr.get_value(self)}"
+          to_one_duplicate = attr.get_value(self).duplicate unless attr.get_value(self).nil?
+          puts "to_one_duplicate"
+          puts to_one_duplicate
+          attr.set_value(duplicate, to_one_duplicate)
+        end
+
+        def duplicate_to_one_attributes duplicate
           puts "to_one_attributes"
           to_one_attributes.each { |attr|
-            puts "#{attr.name} #{attr.get_value(self)}"
-            to_one_duplicate = attr.get_value(self).dup unless attr.get_value(self).nil?
-            puts "to_one_duplicate"
-            puts to_one_duplicate
-            attr.set_value(duplicate, to_one_duplicate)
+            duplicate_to_one_attribute duplicate, attr
           }
-          puts "duplicate after #{duplicate.inspect}"
-          puts "to_many_attributes"
+        end
+
+        def duplicate_to_many_attribute duplicate, attr
+          list = attr.get_value(self)
+          duplicate_list = attr.get_value(duplicate)
+          puts "list each"
+          list.each do |refered_object|
+            puts "common"
+            puts "refered_object #{refered_object}"
+            duplicate_list << refered_object.duplicate unless refered_object.nil?
+          end
+        end
+
+        def duplicate_to_many_attributes duplicate
           to_many_attributes.each { |attr|
-            list = attr.get_value(self)
-            duplicate_list = attr.get_value(duplicate)
-            list.each do |refered_object|
-              duplicate_list << refered_object.dup unless refered_object.nil?
-            end
+            duplicate_to_many_attribute duplicate, attr
           }
+        end
+
+        def duplicate_references_by_keys_attribute duplicate, attr
+          puts "before hashes"
+          hashes = attr.get_value(self)
+          puts "hashes #{hashes}"
+          duplicate_list = attr.get_value(duplicate)
+          hashes.each do |dictionary|
+            puts "hashes each"
+            duplicate_dictionary = ObjectDictionary.new(attr, duplicate)
+            dictionary.each do |key, object|
+              duplicate_dictionary[key] = object.duplicate unless object.nil?
+            end
+            puts "duplicate_dictionary #{duplicate_dictionary}"
+            duplicate_list << duplicate_dictionary unless duplicate_dictionary.nil?
+          end
+          puts "duplicate hashes #{duplicate_list}"
+        end
+
+        def duplicate_references_by_keys_attributes duplicate
           puts "duplicate after #{duplicate.inspect}"
           puts "references_by_keys_attributes"
+          puts "why here?"
           references_by_keys_attributes.each { |attr|
-            hashes = attr.get_value(self)
-            puts "hashes #{hashes}"
-            duplicate_list = attr.get_value(duplicate)
-            hashes.each do |dictionary|
-              duplicate_dictionary = ObjectDictionary.new(attr, duplicate)
-              dictionary.each do |key, object|
-                duplicate_dictionary[key] = object.dup unless object.nil?
-              end
-              puts "duplicate_dictionary #{duplicate_dictionary}"
-              duplicate_list << duplicate_dictionary
-            end
-            puts "duplicate hashes #{duplicate_list}"
+            duplicate_references_by_keys_attribute duplicate, attr
           }
+        end
+
+        def dup
+          self.class.new(self.project, self.project.generate_uuid)
+        end
+
+        def duplicate
+          duplicate = self.dup
+
+          duplicate_simple_attributes duplicate
           puts "duplicate after #{duplicate.inspect}"
+          duplicate_to_one_attributes duplicate
+          puts "duplicate after #{duplicate.inspect}"
+
+          duplicate_to_many_attributes duplicate
+
+          puts "duplicate after #{duplicate.inspect}"
+
+          duplicate_references_by_keys_attributes duplicate
+          puts "duplicate after #{duplicate.inspect}"
+          duplicate
         end
 
         # @return [String] the object universally unique identifier.

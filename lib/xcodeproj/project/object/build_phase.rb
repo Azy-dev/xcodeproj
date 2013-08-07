@@ -150,7 +150,7 @@ module Xcodeproj
       class PBXResourcesBuildPhase < AbstractBuildPhase
 
       end
-
+      
       #-----------------------------------------------------------------------#
 
       # Phase that copies the files to the bundle of the target (aka `Copy
