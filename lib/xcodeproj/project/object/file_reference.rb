@@ -156,7 +156,15 @@ module Xcodeproj
         end
         
         def duplicate
-          self
+          if explicit_file_type. == "wrapper.application"
+            duplicate = super
+            app_name = self.path.match(/(.*).app$/)[1]
+            duplicate.path = app_name + " duplicate.app"
+            self.project.products << duplicate
+            duplicate
+          else
+            self
+          end
         end
 
         #---------------------------------------------------------------------#

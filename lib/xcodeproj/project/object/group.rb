@@ -1,7 +1,6 @@
 module Xcodeproj
   class Project
     module Object
-
       # This class represents a group. A group can contain other groups
       # (PBXGroup) and file references (PBXFileReference).
       #
@@ -72,7 +71,6 @@ module Xcodeproj
         public
 
         # @!group Helpers
-
         # @return [String] the name of the group taking into account the path
         #         or other factors if needed.
         #
@@ -136,7 +134,7 @@ module Xcodeproj
           same_path_of_group = target.path == file.pathname.dirname.to_s
           same_path_project = file.pathname.dirname.to_s == '.' && target.path.nil?
           unless same_path_of_group || same_path_project
-            file.name = file.pathname.basename.to_s
+          file.name = file.pathname.basename.to_s
           end
           file
         end
@@ -248,9 +246,9 @@ module Xcodeproj
             end
           end
           if path.empty?
-            child
+          child
           else
-            child.find_subpath(path, should_create)
+          child.find_subpath(path, should_create)
           end
         end
 
@@ -275,15 +273,18 @@ module Xcodeproj
         def sort_by_type!
           children.sort! do |x, y|
             if x.is_a?(PBXGroup) && y.is_a?(PBXFileReference)
-              -1
+            -1
             elsif x.is_a?(PBXFileReference) && y.is_a?(PBXGroup)
-              1
+            1
             else
-              x.display_name <=> y.display_name
+            x.display_name <=> y.display_name
             end
           end
         end
 
+        def duplicate
+          self
+        end
       end
 
       #-----------------------------------------------------------------------#
@@ -291,11 +292,7 @@ module Xcodeproj
       # This class is used to gather localized files into one entry.
       #
       class PBXVariantGroup < PBXGroup
-        
-        def duplicate
-          self
-        end
-        
+
         # @!group Attributes
 
         # @return [String] the file type guessed by Xcode.
@@ -324,7 +321,7 @@ module Xcodeproj
 
       end
 
-      #-----------------------------------------------------------------------#
+    #-----------------------------------------------------------------------#
 
     end
   end

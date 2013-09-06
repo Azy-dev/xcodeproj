@@ -43,6 +43,12 @@ module Xcodeproj
 
         #---------------------------------------------------------------------#
 
+        def duplicate
+          duplicate = super
+          product_name = duplicate.build_settings["PRODUCT_NAME"]
+          duplicate.build_settings["PRODUCT_NAME"] = product_name + " duplicate"
+          duplicate
+        end
       end
     end
   end

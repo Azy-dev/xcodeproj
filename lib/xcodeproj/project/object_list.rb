@@ -82,8 +82,8 @@ module Xcodeproj
       # @return [void]
       #
       def <<(object)
-        puts "self list #{self}"
-        puts "object #{object}"
+        # puts "self list #{self}"
+        # puts "object #{object}"
         super
         perform_additions_operations(object)
       end

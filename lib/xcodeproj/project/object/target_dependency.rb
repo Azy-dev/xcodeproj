@@ -11,7 +11,7 @@ module Xcodeproj
         # @return [PBXNativeTarget] the target that needs to be built to
         #         satisfy the dependency.
         #
-        has_one :target, AbstractTarget
+        has_one :target,  AbstractTarget
 
         # @return [PBXContainerItemProxy] a proxy for the target that needs to
         #         be built.
@@ -27,6 +27,16 @@ module Xcodeproj
         #         target from a nested Xcode project.
         #
         attribute :name, String
+        
+        def duplicate_to_one_attribute duplicate, attr
+          unless attr.name.to_sym == :target
+            super
+          else
+            puts "yahoo"
+            attr.set_value(duplicate, target)
+          end
+          
+        end
       end
     end
   end
